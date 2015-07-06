@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     
     var userIsTyping = false
+    var isFloat = false
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -23,6 +24,18 @@ class ViewController: UIViewController {
         }
         println("digit = \(digit)")
     }
+    
+    @IBAction func makeFloat(sender: UIButton) {
+        if userIsTyping {
+            if (!isFloat) {
+                display.text = display.text!+"."
+                isFloat = true
+            }
+        } else {
+            display.text = "0."
+        }
+    }
+    
     
     var operandStack = Array<Double>()
     
