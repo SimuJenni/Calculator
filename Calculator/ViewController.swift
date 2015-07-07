@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
+    @IBOutlet weak var history: UILabel!
     
     var userIsTyping = false
     var isFloat = false
@@ -36,6 +37,15 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func Clear(sender: UIButton) {
+        display.text = "0"
+        history.text = "CLEAR"
+        userIsTyping = false
+        isFloat = false
+        operandStack  = Array<Double>()
+    }
+    
+    
     var operandStack = Array<Double>()
     
     @IBAction func operation(sender: UIButton) {
@@ -44,29 +54,38 @@ class ViewController: UIViewController {
             enter()
         }
         switch operand{
-        case "×": performOperation {$1 * $0}
-        case "÷": performOperation {$1 / $0}
-        case "+": performOperation {$1 + $0}
-        case "−": performOperation {$1 - $0}
-        case "√": performOperation {sqrt($0)}
-        case "sin": performOperation {sin($0)}
-        case "cos": performOperation {cos($0)}
-        case "π": display.text = M_PI.description
-            enter()
+        case "×": performOperation( {$1 * $0}, symbol: "×")
+        case "÷": performOperation({$1 / $0}, symbol: "÷")
+        case "+": performOperation ({$1 + $0}, symbol: "+")
+        case "−": performOperation( {$1 - $0}, symbol: "−")
+        case "√": performOperation({sqrt($0)}, symbol: "√")
+        case "sin": performOperation({sin($0)}, symbol: "sin")
+        case "cos": performOperation({cos($0)}, symbol: "cos")
+        case "π": specialValue(M_PI.description, symbol: "π")
         default: break
         }
     }
     
-    private func performOperation(operation: (Double, Double) -> Double) {
+    private func specialValue(value: String, symbol: String) {
+        display.text = value
+        enter()
+    }
+    
+    private func performOperation(operation: (Double, Double) -> Double, symbol: String) {
         if operandStack.count >= 2 {
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+            let operand1 = operandStack.removeLast()
+            let operand2 = operandStack.removeLast()
+            history.text = String(format:"%.2f", operand1) + symbol +  String(format:"%.2f", operand2)
+            displayValue = operation(operand1, operand2)
             enter()
         }
     }
     
-    private func performOperation(operation: Double ->Double) {
+    private func performOperation(operation: Double ->Double, symbol: String) {
         if operandStack.count >= 1 {
-            displayValue = operation(operandStack.removeLast())
+            let operand = operandStack.removeLast()
+            history.text = symbol + String(format:"(%.2f)", operand)
+            displayValue = operation(operand)
             enter()
         }
     }
