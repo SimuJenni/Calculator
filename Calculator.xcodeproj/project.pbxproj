@@ -13,6 +13,7 @@
 		9238A1981B35AFFC00871440 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9238A1971B35AFFC00871440 /* Images.xcassets */; };
 		9238A19B1B35AFFC00871440 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9238A1991B35AFFC00871440 /* LaunchScreen.xib */; };
 		9238A1A71B35AFFD00871440 /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9238A1A61B35AFFD00871440 /* CalculatorTests.swift */; };
+		927885B41B4C7398002ED02B /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927885B31B4C7398002ED02B /* CalculatorBrain.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		9238A1A01B35AFFD00871440 /* CalculatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9238A1A51B35AFFD00871440 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9238A1A61B35AFFD00871440 /* CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTests.swift; sourceTree = "<group>"; };
+		927885B31B4C7398002ED02B /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		9238A1821B35AFFC00871440 = {
 			isa = PBXGroup;
 			children = (
+				927885B31B4C7398002ED02B /* CalculatorBrain.swift */,
 				9238A18D1B35AFFC00871440 /* Calculator */,
 				9238A1A31B35AFFD00871440 /* CalculatorTests */,
 				9238A18C1B35AFFC00871440 /* Products */,
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				927885B41B4C7398002ED02B /* CalculatorBrain.swift in Sources */,
 				9238A1931B35AFFC00871440 /* ViewController.swift in Sources */,
 				9238A1911B35AFFC00871440 /* AppDelegate.swift in Sources */,
 			);
@@ -411,6 +415,7 @@
 				9238A1AC1B35AFFD00871440 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9238A1AD1B35AFFD00871440 /* Build configuration list for PBXNativeTarget "CalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +424,7 @@
 				9238A1AF1B35AFFD00871440 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

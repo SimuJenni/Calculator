@@ -276,7 +276,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="Clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qIa-1r-8ty"/>
+                                    <action selector="operation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lwX-ma-3Kc"/>
                                 </connections>
                             </button>
                         </subviews>

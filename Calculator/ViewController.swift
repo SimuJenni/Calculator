@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     var userIsTyping = false
     var isFloat = false
     
+    var brain = CalculatorBrain()
+    
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsTyping {
@@ -23,7 +25,6 @@ class ViewController: UIViewController {
             display.text = digit
             userIsTyping = true
         }
-        println("digit = \(digit)")
     }
     
     @IBAction func makeFloat(sender: UIButton) {
@@ -37,32 +38,17 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func Clear(sender: UIButton) {
-        display.text = "0"
-        history.text = "CLEAR"
-        userIsTyping = false
-        isFloat = false
-        operandStack  = Array<Double>()
-    }
-    
-    
-    var operandStack = Array<Double>()
     
     @IBAction func operation(sender: UIButton) {
-        let operand = sender.currentTitle!
         if(userIsTyping){
             enter()
         }
-        switch operand{
-        case "×": performOperation( {$1 * $0}, symbol: "×")
-        case "÷": performOperation({$1 / $0}, symbol: "÷")
-        case "+": performOperation ({$1 + $0}, symbol: "+")
-        case "−": performOperation( {$1 - $0}, symbol: "−")
-        case "√": performOperation({sqrt($0)}, symbol: "√")
-        case "sin": performOperation({sin($0)}, symbol: "sin")
-        case "cos": performOperation({cos($0)}, symbol: "cos")
-        case "π": specialValue(M_PI.description, symbol: "π")
-        default: break
+        if let operand = sender.currentTitle {
+            if let result = brain.performOperation(operand){
+                displayValue = result
+            } else {
+                displayValue = 0
+            }
         }
     }
     
@@ -71,30 +57,15 @@ class ViewController: UIViewController {
         enter()
     }
     
-    private func performOperation(operation: (Double, Double) -> Double, symbol: String) {
-        if operandStack.count >= 2 {
-            let operand1 = operandStack.removeLast()
-            let operand2 = operandStack.removeLast()
-            history.text = String(format:"%.2f", operand1) + symbol +  String(format:"%.2f", operand2)
-            displayValue = operation(operand1, operand2)
-            enter()
-        }
-    }
-    
-    private func performOperation(operation: Double ->Double, symbol: String) {
-        if operandStack.count >= 1 {
-            let operand = operandStack.removeLast()
-            history.text = symbol + String(format:"(%.2f)", operand)
-            displayValue = operation(operand)
-            enter()
-        }
-    }
     
     @IBAction func enter() {
         userIsTyping = false
-        operandStack.append(displayValue)
-        println("\(operandStack)")
         isFloat = false
+        if let result = brain.pushOperand(displayValue) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
     }
     
     var displayValue: Double {
