@@ -10,6 +10,7 @@ import Foundation
 
 class CalculatorBrain {
     
+    var description = ""
     private var opStack = [Op]();
     
     private enum Op: Printable {
@@ -60,14 +61,18 @@ class CalculatorBrain {
             let op = remainingOps.removeLast()
             switch op {
             case .Operand(let operand):
+                description += operand.description
                 return (operand, remainingOps)
             case .UnaryOperation(_ , let operation):
+                description += op.description + "("
                 let evalRemain = evaluate(remainingOps)
                 if let operand = evalRemain.result {
+                    description += ")"
                     return (operation(operand), evalRemain.remainingOps)
                 }
             case .BinaryOperation(_ , let operation):
                 let evalRemain1 = evaluate(remainingOps)
+                description += op.description
                 if let operand1 = evalRemain1.result {
                     var evalRemain2 = evaluate(evalRemain1.remainingOps)
                     if let operand2 = evalRemain2.result {
@@ -75,12 +80,17 @@ class CalculatorBrain {
                     }
                 }
             case .SpecialOp(_ , let value):
+                description += op.description
                 return (value, remainingOps)
             case .Variable(let name):
                 if let value = variableValues[name] {
+                    description += op.description
                     return (value, remainingOps)
+                } else {
+                    return (nil, remainingOps)
                 }
             case .ClearOperand():
+                description = ""
                 opStack = [Op]();
                 return (0, opStack)
             }
@@ -91,6 +101,8 @@ class CalculatorBrain {
     func evaluate() -> Double? {
         let (result, remainStack) = evaluate(opStack)
         println("\(opStack) = \(result) with remainder \(remainStack)")
+        println(description)
+        description = ""
         return result
     }
     
