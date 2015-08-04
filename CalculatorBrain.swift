@@ -17,6 +17,7 @@ class CalculatorBrain {
         case UnaryOperation(String, Double ->Double)
         case BinaryOperation(String, (Double, Double)->Double)
         case SpecialOp(String, Double)
+        case Variable(String)
         case ClearOperand()
         
         var description: String {
@@ -30,6 +31,8 @@ class CalculatorBrain {
                     return symbol
                 case .UnaryOperation(let symbol, _ ):
                     return symbol
+                case .Variable(let name):
+                    return name
                 case .ClearOperand():
                     return "CLEAR"
                 }
@@ -73,6 +76,10 @@ class CalculatorBrain {
                 }
             case .SpecialOp(_ , let value):
                 return (value, remainingOps)
+            case .Variable(let name):
+                if let value = variableValues[name] {
+                    return (value, remainingOps)
+                }
             case .ClearOperand():
                 opStack = [Op]();
                 return (0, opStack)
@@ -87,8 +94,15 @@ class CalculatorBrain {
         return result
     }
     
-    func pushOperand(value: Double) -> Double? {
-        opStack.append(Op.Operand(value))
+    func pushOperand(value: Double?) -> Double? {
+        opStack.append(Op.Operand(value!))
+        return evaluate()
+    }
+    
+    var variableValues = [String: Double]()
+    
+    func pushOperand(value: String) -> Double? {
+        opStack.append(Op.Variable(value))
         return evaluate()
     }
     

@@ -68,12 +68,12 @@ class ViewController: UIViewController {
         }
     }
     
-    var displayValue: Double {
+    var displayValue: Double? {
         get{
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
         }
         set {
-            display.text = "\(newValue)"
+            display.text = "\(newValue!)"
             userIsTyping = false
         }
     }
