@@ -11,6 +11,7 @@ import Foundation
 class CalculatorBrain {
     
     var description = ""
+    private var descrList = [String]()
     private var opStack = [Op]();
     
     private enum Op: Printable {
@@ -61,36 +62,38 @@ class CalculatorBrain {
             let op = remainingOps.removeLast()
             switch op {
             case .Operand(let operand):
-                description += operand.description
+                descrList += [operand.description]
                 return (operand, remainingOps)
             case .UnaryOperation(_ , let operation):
-                description += op.description + "("
                 let evalRemain = evaluate(remainingOps)
+                descrList.insert(op.description + "(", atIndex: descrList.startIndex)
                 if let operand = evalRemain.result {
-                    description += ")"
+                    descrList += [")"]
                     return (operation(operand), evalRemain.remainingOps)
                 }
             case .BinaryOperation(_ , let operation):
                 let evalRemain1 = evaluate(remainingOps)
-                description += op.description
+                let tmp = descrList.removeAtIndex(descrList.startIndex)
                 if let operand1 = evalRemain1.result {
                     var evalRemain2 = evaluate(evalRemain1.remainingOps)
+                    descrList.insert(op.description, atIndex: descrList.endIndex)
+                    descrList.insert(tmp, atIndex: descrList.endIndex)
                     if let operand2 = evalRemain2.result {
                         return (operation(operand1, operand2), evalRemain2.remainingOps)
                     }
                 }
             case .SpecialOp(_ , let value):
-                description += op.description
+                descrList += [op.description]
                 return (value, remainingOps)
             case .Variable(let name):
                 if let value = variableValues[name] {
-                    description += op.description
+                    descrList += [op.description]
                     return (value, remainingOps)
                 } else {
                     return (nil, remainingOps)
                 }
             case .ClearOperand():
-                description = ""
+                descrList = [String]()
                 opStack = [Op]();
                 return (0, opStack)
             }
@@ -100,9 +103,10 @@ class CalculatorBrain {
     
     func evaluate() -> Double? {
         let (result, remainStack) = evaluate(opStack)
+        description = descrList.reduce("", combine: {$0 + $1})
         println("\(opStack) = \(result) with remainder \(remainStack)")
         println(description)
-        description = ""
+        descrList = [String]()
         return result
     }
     
