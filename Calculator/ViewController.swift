@@ -27,6 +27,23 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func storeVar(sender: UIButton) {
+        userIsTyping = false
+        if let name = last(sender.currentTitle!) {
+            brain.variableValues["\(name)"]=displayValue
+        }
+    }
+    
+    @IBAction func loadVar(sender: UIButton) {
+        userIsTyping = false
+        isFloat = false
+        if let result = brain.pushOperand(sender.currentTitle!) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+    }
+    
     @IBAction func makeFloat(sender: UIButton) {
         if userIsTyping {
             if (!isFloat) {

@@ -10,8 +10,9 @@ import Foundation
 
 class CalculatorBrain {
     
-    private var descrList = [String]()
     private var opStack = [Op]();
+    private var knownOps = [String:Op]()
+    var variableValues = [String: Double]()
 
     private enum Op: Printable {
         case Operand(Double)
@@ -40,8 +41,6 @@ class CalculatorBrain {
             }
         }
     }
-    
-    private var knownOps = [String:Op]()
     
     init() {
         knownOps["×"] = Op.BinaryOperation("×", *)
@@ -85,6 +84,7 @@ class CalculatorBrain {
                 }
             case .ClearOperand():
                 opStack = [Op]();
+                variableValues = [String: Double]()
                 return (0, opStack)
             }
         }
@@ -94,6 +94,7 @@ class CalculatorBrain {
     func evaluate() -> Double? {
         let (result, remainStack) = evaluate(opStack)
         println("\(opStack) = \(result) with remainder \(remainStack)")
+        println("\(variableValues)")
         return result
     }
     
@@ -102,7 +103,6 @@ class CalculatorBrain {
         return evaluate()
     }
     
-    var variableValues = [String: Double]()
     
     func pushOperand(value: String) -> Double? {
         opStack.append(Op.Variable(value))
@@ -163,8 +163,6 @@ class CalculatorBrain {
             case .Variable(let name):
                 if let value = variableValues[name] {
                     return (op.description, remainingOps)
-                } else {
-                    return (nil, remainingOps)
                 }
             case .ClearOperand():
                 return ("", opStack)
