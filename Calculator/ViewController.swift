@@ -57,7 +57,6 @@ class ViewController: UIViewController {
         enter()
     }
     
-    
     @IBAction func enter() {
         userIsTyping = false
         isFloat = false
@@ -74,6 +73,7 @@ class ViewController: UIViewController {
         }
         set {
             display.text = "\(newValue!)"
+            history.text = brain.description + " ="
             userIsTyping = false
         }
     }

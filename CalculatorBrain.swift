@@ -10,10 +10,9 @@ import Foundation
 
 class CalculatorBrain {
     
-    var description = ""
     private var descrList = [String]()
     private var opStack = [Op]();
-    
+
     private enum Op: Printable {
         case Operand(Double)
         case UnaryOperation(String, Double ->Double)
@@ -62,38 +61,29 @@ class CalculatorBrain {
             let op = remainingOps.removeLast()
             switch op {
             case .Operand(let operand):
-                descrList += [operand.description]
                 return (operand, remainingOps)
             case .UnaryOperation(_ , let operation):
                 let evalRemain = evaluate(remainingOps)
-                descrList.insert(op.description + "(", atIndex: descrList.startIndex)
                 if let operand = evalRemain.result {
-                    descrList += [")"]
                     return (operation(operand), evalRemain.remainingOps)
                 }
             case .BinaryOperation(_ , let operation):
                 let evalRemain1 = evaluate(remainingOps)
-                let tmp = descrList.removeAtIndex(descrList.startIndex)
                 if let operand1 = evalRemain1.result {
                     var evalRemain2 = evaluate(evalRemain1.remainingOps)
-                    descrList.insert(op.description, atIndex: descrList.endIndex)
-                    descrList.insert(tmp, atIndex: descrList.endIndex)
                     if let operand2 = evalRemain2.result {
                         return (operation(operand1, operand2), evalRemain2.remainingOps)
                     }
                 }
             case .SpecialOp(_ , let value):
-                descrList += [op.description]
                 return (value, remainingOps)
             case .Variable(let name):
                 if let value = variableValues[name] {
-                    descrList += [op.description]
                     return (value, remainingOps)
                 } else {
                     return (nil, remainingOps)
                 }
             case .ClearOperand():
-                descrList = [String]()
                 opStack = [Op]();
                 return (0, opStack)
             }
@@ -103,10 +93,7 @@ class CalculatorBrain {
     
     func evaluate() -> Double? {
         let (result, remainStack) = evaluate(opStack)
-        description = descrList.reduce("", combine: {$0 + $1})
         println("\(opStack) = \(result) with remainder \(remainStack)")
-        println(description)
-        descrList = [String]()
         return result
     }
     
@@ -127,6 +114,61 @@ class CalculatorBrain {
             opStack.append(operation)
         }
         return evaluate()
+    }
+    
+    var description: String {
+        get {
+            if let result = description(opStack).result {
+                return result
+            }
+            return "ERROR"
+        }
+    }
+    
+    private func description(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        var remainingOps = ops
+        
+        if !ops.isEmpty {
+            let op = remainingOps.removeLast()
+            
+            switch op {
+            case .Operand(let operand):
+                return (operand.description , remainingOps)
+            case .UnaryOperation(_ , let operation):
+                let evalRemain = description(remainingOps)
+                if let operand = evalRemain.result {
+                    return (op.description+"("+operand+")", evalRemain.remainingOps)
+                }
+            case .BinaryOperation(_ , let operation):
+                let evalRemain1 = description(remainingOps)
+                if let operand1 = evalRemain1.result {
+                    var evalRemain2 = description(evalRemain1.remainingOps)
+                    if let operand2 = evalRemain2.result {
+                        var op2 = operand2
+                        if evalRemain1.remainingOps.count > 2 {
+                            op2 = "("+op2+")"
+                        }
+                        var result = op2+op.description+operand1
+                        if evalRemain2.remainingOps.count > 0 {
+                            result = "("+result+")"
+                        }
+                        return (result, evalRemain2.remainingOps)
+                    }
+                }
+            case .SpecialOp(_ , let value):
+                return (op.description, remainingOps)
+            case .Variable(let name):
+                if let value = variableValues[name] {
+                    return (op.description, remainingOps)
+                } else {
+                    return (nil, remainingOps)
+                }
+            case .ClearOperand():
+                return ("", opStack)
+                
+            }
+        }
+        return ("?", remainingOps)
     }
     
 }
