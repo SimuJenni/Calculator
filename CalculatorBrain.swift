@@ -118,10 +118,13 @@ class CalculatorBrain {
     
     var description: String {
         get {
-            if let result = description(opStack).result {
-                return result
-            }
-            return "ERROR"
+            var (result, ops) = ("", opStack)
+            do {
+                var current: String?
+                (current, ops) = description(ops)
+                result = (result == "") ? current! : "\(current!), \(result)"
+            } while ops.count>0
+            return result
         }
     }
     
